@@ -1,0 +1,100 @@
+openapi: '3.0.3'
+info : 
+  title: TodoList RESTful API
+  version: '1.0'
+  description: OpenApi for TodoList RESTful API
+  contact:
+    name: Brian Natanael Nainggolan
+    email: bryannatanael77@gmail.com
+  license:
+    name: APACHE 2.0
+    url: https://www.apache.org/licenses/LICENSE-2.0
+servers:
+    - url: https://{environment}.serverapi.test/v1
+      variables:
+        environment: 
+          description: RESTful API 
+          default: dev
+          enum:
+            - "dev"
+            - "qa"
+            - "prod"    
+paths: 
+  /todolist:
+    post: 
+      summary: "create new TodoList"
+      description: "Create new TodoList by default"
+      responses:
+        "200":
+          description: OK
+         
+    get: 
+      summary: Get all TodoList 
+      description: Get all active rodoist by default
+      parameters: 
+        - name: Include_done
+          in: query
+          required: false
+          description: Include done TodoList in the result
+          schema:
+            type: boolean
+            default: true
+
+        - name: Name
+          in: query
+          required: false
+          description: Filter TodoList by name 
+          schema:
+           type: string
+
+      responses:
+        '200':
+          description: OK
+  /todolist{todolistid}:
+    delete:
+      summary: Delete existing TodoList
+      description: Delete all exsting TodoList in database
+      parameters:
+        - name: todolistid
+          in: path
+          description: todolistid for deleted
+          required: true
+          schema:
+            type: string
+
+      responses:
+        "200":
+          description: Delete Success
+    put: 
+      summary: Update existing TodoList
+      description:  Update all exiitng TodoList in database
+      parameters:
+        - name: todolistid
+          in: path
+          description: todolistid for updated
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Ok
+
+
+
+
+
+
+
+
+# openapi: '3.0.2'
+# info:
+#   title: API Title
+#   version: '1.0'
+# servers:
+#   - url: https://api.server.test/v1
+# paths:
+#   /test:
+#     get:
+#       responses:
+#         '200':
+#           description: OK
