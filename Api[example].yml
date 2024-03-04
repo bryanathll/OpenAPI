@@ -38,7 +38,8 @@ paths:
           description: Include done TodoList in the result
           schema:
             type: boolean
-            default: true
+            default: false
+            nullable: true
 
         - name: Name
           in: query
@@ -46,10 +47,12 @@ paths:
           description: Filter TodoList by name 
           schema:
            type: string
-
+           minLength: 1
+           maxLength: 100
       responses:
         '200':
           description: OK
+
   /todolist{todolistid}:
     delete:
       summary: Delete existing TodoList
@@ -61,10 +64,12 @@ paths:
           required: true
           schema:
             type: string
-
+            minLength: 1
+            maxLength: 100
       responses:
         "200":
           description: Delete Success
+
     put: 
       summary: Update existing TodoList
       description:  Update all exiitng TodoList in database
@@ -75,6 +80,8 @@ paths:
           required: true
           schema:
             type: string
+            minLength: 1
+            maxLength: 100
       responses:
         "200":
           description: Ok
