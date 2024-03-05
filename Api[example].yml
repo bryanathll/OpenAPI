@@ -1,4 +1,4 @@
-openapi: '3.0.3'
+openapi: '3.0.2'
 info : 
   title: TodoList RESTful API
   version: '1.0'
@@ -20,15 +20,83 @@ servers:
             - "qa"
             - "prod"    
 paths: 
+# ============================/todolist Path Section============================
   /todolist:
+# ============================Post Method Section============================
     post: 
+      security:
+        - TodolistAuth: []
+      
+      tags: [Todolist]
       summary: "create new TodoList"
       description: "Create new TodoList by default"
+      requestBody:
+        required: true
+        content:
+          application/json: 
+            schema: 
+              "$ref": "#/components/schemas/TodolistCreateUpdate"
+            examples:
+              Clean house:
+                description: Example create todolist clean house
+                value: 
+                  name: clean
+                  priority: 3
+                  tags:
+                    - Clean
+                    - House
+              Work on coursera:
+                description: Example create todolist work on coursera courses
+                value: 
+                  name: Coursera 
+                  priority: 2
+                  tags:
+                    - Work
+                    - Coursera
       responses:
         "200":
-          description: OK
-         
-    get: 
+          description: Success create TodoList
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/Todolist"
+              examples:
+                Clean house:
+                  description: Example Success create TodoList clean house
+                  value: 
+                    name: clean
+                    priority: 3
+                    tags:
+                      - Clean
+                      - House
+                Work on Coursera: 
+                  description:  Example Success create TodoList work on coursera courses
+                  value: 
+                    name: Coursera 
+                    priority: 2
+                    tags:
+                      - Work
+                      - Coursera
+        "404":
+          description: Error Page not found
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error messages:
+                    type: string
+              examples:
+                Error Clean house:
+                  description: failed create Clean house todolist
+                  value: Error page not found 
+# ============================Post Method Section end============================
+
+# ============================Get Method Section============================
+    get:
+      security:
+        - TodolistAuth: [] 
+      tags: [Todolist]
       summary: Get all TodoList 
       description: Get all active rodoist by default
       parameters: 
@@ -49,49 +117,195 @@ paths:
            type: string
            minLength: 1
            maxLength: 100
+           
+          examples:
+            Clean house: 
+              description: Example name Clean house
+              value: Clean
+            Work on Coursera:
+              description: Example name Work on coursera courses
+              value: Coursera
       responses:
         '200':
-          description: OK
+          description: Success Get all TodoList
+          content:
+            aplication/json:
+              schema:
+                "$ref": "#/components/schemas/arrayTodoList"           
+              examples:
+                Success:
+                  description: Example Success Get all TodoList
+                  value:
+                    - id: 1
+                      name: Clean hosue
+                      priority: 1
+                      tags:
+                        - Clean
+                        - House
 
+                    - id: 2
+                      name: Coursera
+                      priority: 22
+                      tags:
+                        - Work
+                        - Coursera                
+# ============================/todolist Path Section end============================
+                
+# ============================/todolist{todolistid} Path Section============================
   /todolist{todolistid}:
+# ============================Delete Method Section============================
     delete:
+      security:
+        - TodolistAuth: []
+      tags: [Todolist]
       summary: Delete existing TodoList
       description: Delete all exsting TodoList in database
       parameters:
-        - name: todolistid
-          in: path
-          description: todolistid for deleted
-          required: true
-          schema:
-            type: string
-            minLength: 1
-            maxLength: 100
+        - "$ref": "#/components/parameters/todolistid"
       responses:
         "200":
-          description: Delete Success
+          description: Success Delete TodoList
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  Success: 
+                    type: boolean
+              examples:
+                Clean House:
+                  description: Success delete Clean House todolist
+                  value: true
+# ============================Delete Method Section end============================
 
+# ============================put Method Section============================
     put: 
+      security:
+        - TodolistAuth: []
+      tags: [Todolist]
       summary: Update existing TodoList
       description:  Update all exiitng TodoList in database
       parameters:
-        - name: todolistid
-          in: path
-          description: todolistid for updated
-          required: true
-          schema:
-            type: string
-            minLength: 1
-            maxLength: 100
+        - "$ref": "#/components/parameters/todolistid"
+      requestBody:
+        required: true
+        content:
+          aplication/json: 
+            schema:
+              "$ref": "#/components/schemas/TodolistCreateUpdate"
+            examples:
+              Clean House:
+                description: Example create todolist clean house
+                value: 
+                  name: clean
+                  priority: 3
+                  tags:
+                    - Clean
+                    - House
+              Work on Coursera:
+                description: Example create todolist work on coursera courses
+                value: 
+                  name: coursera
+                  priority: 3
+                  tags:
+                    - work
+                    - coursera
       responses:
         "200":
-          description: Ok
+          description: Success updated TodoList
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/Todolist"
+              examples:
+                Clean house:
+                  description: Example Success updated TodoList clean house
+                  value: 
+                    name: clean
+                    priority: 3
+                    tags:
+                      - Clean
+                      - House
+                Work on Coursera: 
+                  description:  Example Success updated TodoList work on coursera courses
+                  value: 
+                    name: Coursera 
+                    priority: 2
+                    tags:
+                      - Work
+                      - Coursera
+# ============================put Method Section============================
+# ============================/todolist{todolistid} Path Section============================
+components:
+  securitySchemes:
+    TodolistAuth:
+      description: Authentication for todolist RESTful API
+      type: apiKey
+      in: header
+      name: X-API-Key
 
 
+  parameters:
+    todolistid:
+      name: Name
+      in: query
+      required: true
+      description: Filter TodoList by name 
+      schema:
+        type: string
+        minLength: 1
+        maxLength: 100
+      examples:
+        Clean house: 
+          description: Example name Clean house
+          value: Clean
+        Work on Coursera:
+          description: Example name Work on coursera courses
+          value: Coursera
 
 
+  schemas:
+    Todolist:
+      type: object
+      properties:
+        id:
+          type: string
+          minLength: 1
+        name: 
+          type: string
+          minLength: 1
+        priority: 
+          type: integer
+          format: int32
+          default: 1
+        tags:
+          type: object
+          minItems: 1
+          items:
+            type: string
+            minLength: 1
 
+    TodolistCreateUpdate:
+      type: object
+      properties:
+        name: 
+          type: string
+          minLength: 1
+        priority: 
+          type: integer
+          format: int32
+          default: 1
+        tags:
+          type: object
+          minItems: 1
+          items:
+            type: string
+            minLength: 1
 
-
+    arrayTodoList:
+      type: array
+      items:
+        "$ref": "#/components/schemas/Todolist"
 
 # openapi: '3.0.2'
 # info:
